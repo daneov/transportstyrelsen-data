@@ -78,7 +78,7 @@ def append_to_csv(file_path, data):
     # Check if the file exists to write the header
     try:
         with open(file_path, 'a', newline='', encoding='utf-8') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
+            writer = csv.DictWriter(csvfile, fieldnames=headers, dialect='unix')
             # Write the header only if the file is empty
             if csvfile.tell() == 0:
                 writer.writeheader()
