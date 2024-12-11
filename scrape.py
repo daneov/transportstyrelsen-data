@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import sys
 import json
 import csv
@@ -59,21 +60,17 @@ def map_month(original_month_name):
     
 def calculate_fields(year, month, day):
     # Format date to ISO8601 format
-    case_date = datetime(int(year), int(month), int(day))
+    stockholm_timezone = ZoneInfo("Europe/Stockholm")
+    case_date = datetime(int(year), int(month), int(day), tzinfo=stockholm_timezone)
     case_date_iso = case_date.strftime("%Y-%m-%d")
     
     # Get today's date and time in ISO8601 format
-    current_date = datetime.now()
-    today = current_date.strftime("%Y-%m-%dT%H:%M:%S")
-
-    # Convert both dates to datetime objects for comparison
-    parsed_date = datetime.strptime(case_date_iso, "%Y-%m-%d")
-    
+    today = datetime.now(tz=stockholm_timezone)
     # Calculate the difference in days and weeks
-    delta_days = (current_date - parsed_date).days
+    delta_days = (today - case_date).days
     delta_weeks = delta_days / 7
     
-    return case_date.strftime('%d %B'), case_date_iso, today, delta_weeks
+    return case_date.strftime('%d %B'), case_date_iso, today.isoformat(), delta_weeks
 
 def append_to_csv(file_path, data):
     # Specify the header
