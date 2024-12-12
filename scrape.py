@@ -74,7 +74,7 @@ class SiteScraper:
 
 def append_to_csv(file_path, today, case_date, processing_time):
     # Specify the header
-    headers = ["Date", "Evaluating cases", "Waiting period"]
+    headers = ["Date", "Evaluating cases", "Processing time"]
     try:
         with open(file_path, 'a', newline='', encoding='utf-8') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=headers, dialect='unix')
@@ -85,7 +85,7 @@ def append_to_csv(file_path, today, case_date, processing_time):
             writer.writerow({
                 "Date": today,
                 "Evaluating cases": case_date,
-                "Waiting period": round(processing_time, 2)
+                "Processing time": round(processing_time, 2)
             })
     except Exception as e:
         print(f"Error writing to CSV: {e}")
