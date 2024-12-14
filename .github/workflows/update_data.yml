@@ -1,7 +1,7 @@
 name: Scrape transportstyrelsen
 on:
   schedule:
-    - cron: '0,30 7-17 * * *' # Runs every day at midnight (UTC)
+    - cron: '0,30 7-17 * * Mon-Fri' # Runs every weekday between 7 and 17 UTC
   workflow_dispatch:
 
 jobs:
