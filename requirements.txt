@@ -1,0 +1,7 @@
+mystmd
+myst-parser
+pandas
+numpy
+jupyterlab
+jupyterlab_myst
+glueviz[recommended,qt]
