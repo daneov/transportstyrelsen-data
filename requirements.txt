@@ -1,7 +1,9 @@
-mystmd
-myst-parser
-pandas
-numpy
+bokeh
+glueviz[recommended,qt]
 jupyterlab
 jupyterlab_myst
-glueviz[recommended,qt]
+jupytext
+myst-parser
+mystmd
+numpy
+pandas

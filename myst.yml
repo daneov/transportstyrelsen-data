@@ -2,8 +2,9 @@
 version: 1
 project:
   id: a0bc7470-dea3-4410-837d-422e17ce371e
-  # title:
-  # description:
+  title: Transportstyrelsen - Insights
+  description: |
+    See [README.md](README.md) for more information.
   # keywords: []
   authors: ["Daneo Van Overloop"]
   github: https://github.com/daneov/transportstyrelsen-data
