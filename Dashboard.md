@@ -65,6 +65,7 @@ We define the processing time as the difference between the date on Transportsty
 editable: true
 slideshow:
   slide_type: ''
+tags: [remove-input]
 ---
 from bokeh.plotting import figure, show, output_notebook
 from bokeh.models import HoverTool
@@ -72,19 +73,21 @@ from bokeh.models import DatetimeTickFormatter
 # Enable the output to be displayed in the notebook 
 output_notebook(hide_banner=True)
 
-weekly_means = grouped_by_week['Processing time'].agg(['mean']).round({'mean': 2}).reset_index()
-max_processing_time = weekly_means['mean'].max()
+processing_time_per_week = grouped_by_week['Processing time'].agg(['mean']).round({'mean': 2}).reset_index()
+max_processing_time = processing_time_per_week['mean'].max()
 
 p = figure(title="Mean Processing Time Per Week",
            x_axis_label='Week',
            y_axis_label='Mean Processing Time',
-           x_range=weekly_means['Week'].tolist(),
+           x_range=processing_time_per_week['Week'].tolist(),
            y_range=(0, max_processing_time + 1),
            width=800, 
-           height=400)
+           height=400,
+           sizing_mode='scale_both'
+)
 
-p.line(weekly_means['Week'], weekly_means['mean'], legend_label='Mean Processing Time', line_width=2)
-p.scatter(weekly_means['Week'], weekly_means['mean'], size=8, color='red', alpha=0.5)
+p.line(processing_time_per_week['Week'], processing_time_per_week['mean'], legend_label='Mean Processing Time', line_width=2)
+p.scatter(processing_time_per_week['Week'], processing_time_per_week['mean'], size=8, color='red', alpha=0.5)
 
 show(p, notebook_handle=True)
 ```
