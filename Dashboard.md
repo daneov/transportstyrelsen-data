@@ -35,7 +35,7 @@ def sanitize(df):
     return df
 
 df = sanitize(read_data())
-df['Week'] = df['Date'].dt.strftime('%Y-%U')
+df['Week'] = df['Date'].dt.strftime('%Y-%V')
 grouped_by_week = df.groupby('Week', as_index=True)
 ```
 
