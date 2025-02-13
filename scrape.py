@@ -54,8 +54,8 @@ class SiteScraper:
         tree = html.fromstring(data)
 
         # Use XPath to extract the day, month name, and year
-        day_and_month = tree.xpath('normalize-space(//*[@id="page-alert-block"]/div/div/p/strong[1])')
-        year = tree.xpath('normalize-space(//*[@id="page-alert-block"]/div/div/p/strong[2])')
+        day_and_month = tree.xpath('normalize-space(//*[starts-with(@aria-labelledby,"alert")]/div/div/p/strong[1])')
+        year = tree.xpath('normalize-space(//*[starts-with(@aria-labelledby,"alert")]/div/div/p/strong[2])')
 
         if not day_and_month or not year:
             raise ValueError("Could not find the expected elements on the page.")
