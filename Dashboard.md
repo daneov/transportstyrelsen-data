@@ -67,29 +67,49 @@ slideshow:
   slide_type: ''
 tags: [remove-input]
 ---
-from bokeh.plotting import figure, show, output_notebook
-from bokeh.models import HoverTool
-from bokeh.models import DatetimeTickFormatter
-# Enable the output to be displayed in the notebook 
-output_notebook(hide_banner=True)
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 processing_time_per_week = grouped_by_week['Processing time'].agg(['mean']).round({'mean': 2}).reset_index()
 max_processing_time = processing_time_per_week['mean'].max()
 
-p = figure(title="Mean Processing Time Per Week",
-           x_axis_label='Week',
-           y_axis_label='Mean Processing Time',
-           x_range=processing_time_per_week['Week'].tolist(),
-           y_range=(0, max_processing_time + 1),
-           width=800, 
-           height=400,
-           sizing_mode='scale_both'
+fig = go.Figure()
+
+fig.add_trace(
+    go.Scatter(
+        x=processing_time_per_week['Week'],
+        y=processing_time_per_week['mean'],
+        mode='lines+markers',
+        name='Mean Processing Time',
+        line=dict(width=2),
+        marker=dict(
+            size=8,
+            color='red',
+            opacity=0.5
+        ),
+        hovertemplate='Week: %{x}<br>Processing Time: %{y:.2f}<extra></extra>'
+    )
 )
 
-p.line(processing_time_per_week['Week'], processing_time_per_week['mean'], legend_label='Mean Processing Time', line_width=2)
-p.scatter(processing_time_per_week['Week'], processing_time_per_week['mean'], size=8, color='red', alpha=0.5)
+# Update layout
+fig.update_layout(
+    title='Mean Processing Time Per Week',
+    xaxis_title='Week',
+    yaxis_title='Mean Processing Time',
+    yaxis_range=[0, processing_time_per_week['mean'].max() + 1],
+    width=800,
+    height=400,
+    showlegend=True,
+    template='plotly_white'
+)
 
-show(p, notebook_handle=True)
+# Make the plot responsive
+fig.update_layout(
+    autosize=True,
+)
+
+# Display the figure
+fig.show()
 ```
 
 ```{code-cell} ipython3
