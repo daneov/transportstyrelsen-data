@@ -35,8 +35,9 @@ def sanitize(df):
     return df
 
 df = sanitize(read_data())
-df['Week'] = df['Date'].dt.strftime('%G-%V')
-grouped_by_week = df.groupby('Week', as_index=True)
+df['Progressed cases'] = df['Evaluating cases'].diff().dt.days
+df['ISO_WEEK'] = df['Date'].dt.strftime('%G-%V')
+grouped_by_week = df.sort_values(by=['Date']).groupby('ISO_WEEK', as_index=True)
 ```
 
 ```{code-cell} ipython3
@@ -77,7 +78,7 @@ fig = go.Figure()
 
 fig.add_trace(
     go.Scatter(
-        x=processing_time_per_week['Week'],
+        x=processing_time_per_week['ISO_WEEK'],
         y=processing_time_per_week['mean'],
         mode='lines+markers',
         name='Mean Processing Time',
@@ -94,11 +95,10 @@ fig.add_trace(
 # Update layout
 fig.update_layout(
     title='Mean Processing Time Per Week',
-    xaxis_title='Week',
+    xaxis=dict(type='category'),
+    xaxis_title='ISO_WEEK',
     yaxis_title='Mean Processing Time',
     yaxis_range=[0, processing_time_per_week['mean'].max() + 1],
-    width=800,
-    height=400,
     showlegend=True,
     template='plotly_white'
 )
@@ -109,7 +109,9 @@ fig.update_layout(
 )
 
 # Display the figure
-fig.show()
+fig.show(config={
+    'responsive': True
+})
 ```
 
 ```{code-cell} ipython3
@@ -120,31 +122,78 @@ slideshow:
 tags: [remove-input]
 ---
 # Calculate mean, least and most processing time fluctuations in a week
-grouped_by_week['Processing time'].agg(['mean']).round({'mean': 2})
+# grouped_by_week['Processing time'].agg(['mean']).round({'mean': 2})
+
+weekly_processing = grouped_by_week['Processing time'].agg(['mean']).round({'mean': 2}).reset_index()
+
+# Create a heatmap/block chart
+fig = go.Figure(
+    go.Heatmap(
+        x=weekly_processing['ISO_WEEK'],
+        y=['Processing Time'],  # Single row
+        z=[weekly_processing['mean']],  # Needs to be 2D array
+        text=[[f'{val:.2f}' for val in weekly_processing['mean']]],  # Display values
+        texttemplate='%{text}',
+        textfont={"size": 14},
+        colorscale='Blues',
+        showscale=True,
+        colorbar_title='Days',
+        hoverongaps=False,
+        hovertemplate='Week: %{x}<br>Processing Time: %{z:.2f} days<extra></extra>'
+    )
+)
+
+# Update layout
+fig.update_layout(
+    title='Mean Processing Time Per Week',
+    xaxis=dict(type='category'),
+    xaxis_title='ISO_WEEK',
+    yaxis_title='',
+    template='plotly_white',
+    height=300,  # Reduced height since it's a single row
+    yaxis={'showgrid': False},  # Remove y-axis grid
+)
+
+# Display the figure with responsive configuration
+fig.show(config={
+    'responsive': True
+})
 ```
 
 ### Dates handled
 
 ```{code-cell} ipython3
 ---
-editable: true
-slideshow:
-  slide_type: ''
 tags: [remove-input]
 ---
-# This shows us how many days' worth of cases were handled on a given day.
-df['Progressed cases'] = df['Evaluating cases'].diff().dt.days
-```
+weekly_processed = grouped_by_week['Progressed cases'].agg(['sum']).rename(columns={"sum": "Processed cases"})
+weekly_processed = weekly_processed.reset_index()
 
-```{code-cell} ipython3
-grouped_by_week['Progressed cases'].agg(['sum']).rename(columns={"sum": "Processed dates"})
-```
+fig = go.Figure(
+    go.Bar(
+        x=weekly_processed['ISO_WEEK'],
+        y=weekly_processed['Processed cases'],
+        marker_color='rgb(55, 83, 109)',
+        hovertemplate='Week: %{x}<br>Processed Cases: %{y:,.0f}<extra></extra>'
+    )
+)
 
-```{code-cell} ipython3
----
-editable: true
-slideshow:
-  slide_type: ''
----
+# Update layout
+fig.update_layout(
+    title='Weekly Processed Cases',
+    xaxis_title='ISO_WEEK',
+    yaxis_title='Number of Processed Cases',
+    template='plotly_white',
+    height=400,  # Only set height, let width be responsive
+    bargap=0.2,
+    showlegend=False
+)
 
+# Add y-axis thousands separator
+fig.update_yaxes(separatethousands=True)
+
+# Display the figure - setting config for better responsiveness
+fig.show(config={
+    'responsive': True
+})
 ```

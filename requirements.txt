@@ -8,3 +8,4 @@ mystmd
 numpy
 pandas
 lxml
+plotly
