@@ -183,6 +183,7 @@ fig = go.Figure(
 # Update layout
 fig.update_layout(
     title='Weekly Processed Cases',
+    xaxis=dict(type='category'),
     xaxis_title='Year-week',
     yaxis_title='Number of Processed Cases',
     template='plotly_white',
