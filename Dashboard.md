@@ -36,8 +36,8 @@ def sanitize(df):
 
 df = sanitize(read_data())
 df['Progressed cases'] = df['Evaluating cases'].diff().dt.days
-df['ISO_WEEK'] = df['Date'].dt.strftime('%G-%V')
-grouped_by_week = df.sort_values(by=['Date']).groupby('ISO_WEEK', as_index=True)
+df['Year-week'] = df['Date'].dt.strftime('%G-%V')
+grouped_by_week = df.sort_values(by=['Date']).groupby('Year-week', as_index=True)
 ```
 
 ```{code-cell} ipython3
@@ -78,7 +78,7 @@ fig = go.Figure()
 
 fig.add_trace(
     go.Scatter(
-        x=processing_time_per_week['ISO_WEEK'],
+        x=processing_time_per_week['Year-week'],
         y=processing_time_per_week['mean'],
         mode='lines+markers',
         name='Mean Processing Time',
@@ -96,7 +96,7 @@ fig.add_trace(
 fig.update_layout(
     title='Mean Processing Time Per Week',
     xaxis=dict(type='category'),
-    xaxis_title='ISO_WEEK',
+    xaxis_title='Year-week',
     yaxis_title='Mean Processing Time',
     yaxis_range=[0, processing_time_per_week['mean'].max() + 1],
     showlegend=True,
@@ -130,7 +130,7 @@ weekly_processing = grouped_by_week['Processing time'].agg(['mean']).round({'mea
 # Create a heatmap/block chart
 fig = go.Figure(
     go.Heatmap(
-        x=weekly_processing['ISO_WEEK'],
+        x=weekly_processing['Year-week'],
         y=['Processing Time'],  # Single row
         z=[weekly_processing['mean']],  # Needs to be 2D array
         text=[[f'{val:.2f}' for val in weekly_processing['mean']]],  # Display values
@@ -148,7 +148,7 @@ fig = go.Figure(
 fig.update_layout(
     title='Mean Processing Time Per Week',
     xaxis=dict(type='category'),
-    xaxis_title='ISO_WEEK',
+    xaxis_title='Year-week',
     yaxis_title='',
     template='plotly_white',
     height=300,  # Reduced height since it's a single row
@@ -173,7 +173,7 @@ weekly_processed = weekly_processed.reset_index()
 
 fig = go.Figure(
     go.Bar(
-        x=weekly_processed['ISO_WEEK'],
+        x=weekly_processed['Year-week'],
         y=weekly_processed['Processed cases'],
         marker_color='rgb(55, 83, 109)',
         hovertemplate='Week: %{x}<br>Processed Cases: %{y:,.0f}<extra></extra>'
@@ -183,7 +183,7 @@ fig = go.Figure(
 # Update layout
 fig.update_layout(
     title='Weekly Processed Cases',
-    xaxis_title='ISO_WEEK',
+    xaxis_title='Year-week',
     yaxis_title='Number of Processed Cases',
     template='plotly_white',
     height=400,  # Only set height, let width be responsive
