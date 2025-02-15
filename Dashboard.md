@@ -110,7 +110,8 @@ fig.update_layout(
 
 # Display the figure
 fig.show(config={
-    'responsive': True
+    'responsive': True,
+    'displayModeBar': False
 })
 ```
 
@@ -156,7 +157,8 @@ fig.update_layout(
 
 # Display the figure with responsive configuration
 fig.show(config={
-    'responsive': True
+    'responsive': True,
+    'displayModeBar': False
 })
 ```
 
@@ -194,6 +196,7 @@ fig.update_yaxes(separatethousands=True)
 
 # Display the figure - setting config for better responsiveness
 fig.show(config={
-    'responsive': True
+    'responsive': True,
+    'displayModeBar': False
 })
 ```
